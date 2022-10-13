@@ -4,6 +4,7 @@
 
  on: [push,pull_request]
 
+#Semgrep
  jobs:
    gitleaks:
      runs-on: ubuntu-latest
