@@ -1,0 +1,30 @@
+name: Semgrep
+on:
+  schedule:
+    - cron: '0 0 * * *'
+  workflow_dispatch: {}
+
+jobs:
+  semgrep:
+    name: Scan
+    runs-on: ubuntu-latest
+    env:
+      SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
+    container:
+      image: returntocorp/semgrep
+    if: (github.actor != 'dependabot[bot]')
+    steps:
+      - uses: actions/checkout@v3
+      - run: semgrep ci --sarif -o semgrep.sarif
+      # Upload the SARIF file to the Github action as output
+      - uses: actions/upload-artifact@v2
+         if: always()
+         with:
+           name: semgrep
+           path: semgrep.sarif
+       # Upload the SARIF file to Github, so the findings show up in "Security / Code Scanning alerts"
+       - name: Upload semgrep report
+         if: always()
+         uses: github/codeql-action/upload-sarif@v1
+         with:
+           sarif_file: semgrep.sarif
