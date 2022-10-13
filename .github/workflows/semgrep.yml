@@ -17,13 +17,13 @@ jobs:
       - run: semgrep ci --sarif -o semgrep.sarif
       # Upload the SARIF file to the Github action as output
       - uses: actions/upload-artifact@v2
-         if: always()
-         with:
+        if: always()
+        with:
            name: semgrep
            path: semgrep.sarif
        # Upload the SARIF file to Github, so the findings show up in "Security / Code Scanning alerts"
-       - name: Upload semgrep report
-         if: always()
-         uses: github/codeql-action/upload-sarif@v1
-         with:
-           sarif_file: semgrep.sarif
+      - name: Upload semgrep report
+        if: always()
+        uses: github/codeql-action/upload-sarif@v1
+        with:
+         sarif_file: semgrep.sarif
